@@ -1,5 +1,6 @@
 package com.trajectory.jwtBASIC.jwt;
 
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ import java.io.IOException;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
-
+    private final JWTUtil jwtUtil;
 
     //UsernamePasswordAuthenticationFilter를 상속받아서 customFilter를 만들 때, 해당 메서드를 반드시 구현해야한다.
     @Override
@@ -39,7 +40,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         System.out.println("success");
     }
 

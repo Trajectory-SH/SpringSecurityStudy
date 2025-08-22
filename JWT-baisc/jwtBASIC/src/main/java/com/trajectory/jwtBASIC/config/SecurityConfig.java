@@ -1,5 +1,6 @@
 package com.trajectory.jwtBASIC.config;
 
+import com.trajectory.jwtBASIC.jwt.JWTUtil;
 import com.trajectory.jwtBASIC.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import java.sql.JDBCType;
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -49,7 +51,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
                         //.anyRequest().authenticated() 다른 요청에 대해서는 인증된 사용자만 접근 할 수 있음
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
         http
