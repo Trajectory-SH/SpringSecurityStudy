@@ -37,6 +37,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
+
         //인증매니저가 DB에서 회원 정보를 당겨와서 UserDetailsService를 통해 유저 정보를 받고 검증을 진행한다.
         //인증 성공, 실패에 따라서 아래에 정의해 놓은 메서드가 실행된다.
         return authenticationManager.authenticate(authToken);
@@ -54,8 +55,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
+
+        // 응답 본문에도 토큰 추가 (선택사항)
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+
+        System.out.println("토큰 생성 완료: Bearer " + token);
+
         response.addHeader("Authorization", "Bearer " + token);
+        String authorization = response.getHeader("Authorization");
+        System.out.println(authorization);
 
     }
 
