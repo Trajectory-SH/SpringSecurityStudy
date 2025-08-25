@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminController {
 
-    @GetMapping("/")
+    @GetMapping("/admin")
     public String AdminP() {
 
         return "Admin Controller";
