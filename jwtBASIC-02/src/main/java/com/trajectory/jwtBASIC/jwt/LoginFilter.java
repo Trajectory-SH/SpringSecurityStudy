@@ -18,6 +18,8 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+    //AbstractAuthenticationProcessingFilter의 doFilter() 메서드 내부에서 전반적인 로그인 인증 로직들이 수행된다.
+    // -> attemptAuthentication()메서드를 통해 인증 객체를 생성하고 성공시  successfulAuthentication 메서드를 실행한다.
 //로그인 처리 필터 동작 시작
 
     private final AuthenticationManager authenticationManager;
@@ -63,13 +65,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //AbstractAuthenticationProcessingFilter(로그인 필터의 부모) -> authenticationManager에서 검증 성공후 Authentication 객체를을 성공적으로 만들어내면 실행한다.
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         //로그인 성공시에 JWT 토큰을 발급해주는 로직을 작성하면 된다.
-
-
+        log.info("success!! {}",authResult);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 
+        log.info("fail!! {}",failed.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     }
 }

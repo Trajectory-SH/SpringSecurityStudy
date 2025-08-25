@@ -1,6 +1,7 @@
 package com.trajectory.jwtBASIC.dto;
 
 import com.trajectory.jwtBASIC.entity.UserEntity;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
