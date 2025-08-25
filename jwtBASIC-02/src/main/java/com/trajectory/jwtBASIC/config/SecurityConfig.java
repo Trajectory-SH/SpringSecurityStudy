@@ -1,5 +1,7 @@
 package com.trajectory.jwtBASIC.config;
 
+import com.trajectory.jwtBASIC.jwt.JWTFilter;
+import com.trajectory.jwtBASIC.jwt.JWTUtil;
 import com.trajectory.jwtBASIC.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
+
 
 
     @Bean
@@ -38,21 +42,19 @@ public class SecurityConfig {
 
         http
                 .csrf((auth) -> auth.disable());
-
         http
                 .formLogin((auth) -> auth.disable());
-
         http
                 .httpBasic((auth) -> auth.disable());
-
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/join").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
-
-
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http
                 .sessionManagement((session) -> session

@@ -1,5 +1,6 @@
 package com.trajectory.jwtBASIC.jwt;
 
+import com.trajectory.jwtBASIC.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //로그인 처리 필터 동작 시작
 
     private final AuthenticationManager authenticationManager;
+    private final JWTUtil jwtUtil;
 
     @Override
     //인증 객체를 return
@@ -66,6 +71,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         //로그인 성공시에 JWT 토큰을 발급해주는 로직을 작성하면 된다.
         log.info("success!! {}",authResult);
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
+        String username = customUserDetails.getUsername();
+        Collection<? extends GrantedAuthority> authorities = customUserDetails.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        //public final class SimpleGrantedAuthority implements GrantedAuthority
+        GrantedAuthority auth = iterator.next();
+        String role = auth.getAuthority();
+
+        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+
+        response.addHeader("Authorization", "Bearer " + token);
     }
 
     @Override

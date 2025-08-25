@@ -13,7 +13,7 @@ import java.util.Date;
 public class JWTUtil {
     private SecretKey secretKey;//개발자가 지정한 문자열 기반으로 객체키 생성
 
-    public JWTUtil(@Value("{spring.jwt.secret}") String secret) {
+    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
@@ -21,7 +21,6 @@ public class JWTUtil {
     public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
-
 
     //검증 메서드 2
     public String getRole(String token) {
@@ -45,5 +44,4 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
     }
-
 }
