@@ -73,6 +73,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         log.info("fail!! {}",failed.getMessage());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
     }
 }
